@@ -64,6 +64,9 @@ directive
     | stringList
     | numberRanges
     | properties
+    | byteSizeArg   
+    | timeDurationArg
+    | aggregateMetricsArgs
   )*?
   ;
 
@@ -167,6 +170,18 @@ bool
  : Bool
  ;
 
+byteSizeArg 
+ : BYTE_SIZE 
+ ;
+
+timeDurationArg 
+ : TIME_DURATION 
+ ;
+
+aggregateMetricsArgs
+ : 'aggregate-metrics' column column column column ('average' | 'sum') ('KB' | 'MB' | 'GB') ('ms' | 's') 
+ ;
+ 
 condition
  : OBrace (~CBrace | condition)* CBrace
  ;
@@ -256,6 +271,27 @@ Bool
 Number
  : Int ('.' Digit*)?
  ;
+
+ BYTE_SIZE
+ : Digit+ ('.' Digit+)? BYTE_UNIT
+ ;
+
+TIME_DURATION
+ : Digit+ ('.' Digit+)? TIME_UNIT
+ ;
+
+fragment BYTE_UNIT
+ : [Kk][Bb]
+ | [Mm][Bb]
+ | [Gg][Bb]
+ | [Bb]
+ ;
+
+fragment TIME_UNIT
+ : [Mm][Ss]
+ | [Ss]
+ ;
+
 
 Identifier
  : [a-zA-Z_\-] [a-zA-Z_0-9\-]*

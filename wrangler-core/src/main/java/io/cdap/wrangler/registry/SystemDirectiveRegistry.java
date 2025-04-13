@@ -84,6 +84,14 @@ public final class SystemDirectiveRegistry implements DirectiveRegistry {
       try {
         Reflections reflections = new Reflections(namespace);
         Set<Class<? extends Directive>> system = reflections.getSubTypesOf(Directive.class);
+
+        // DEV ONLY: Manually add AggregateMetrics to avoid reflection issues.
+        registry.put("aggregate-metrics", 
+            DirectiveInfo.fromSystem(
+                io.cdap.directives.aggregates.AggregateMetrics.class
+            )
+        );
+
         for (Class<? extends Directive> directive : system) {
           DirectiveInfo info = DirectiveInfo.fromSystem(directive);
           registry.put(info.name(), info);
